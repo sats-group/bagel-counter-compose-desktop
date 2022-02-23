@@ -45,6 +45,12 @@ compose.desktop {
 
       packageName = "bagels"
       packageVersion = appVersion
+
+      val iconsRoot = project.file("src/main/resources")
+
+      macOS {
+        iconFile.set(iconsRoot.resolve("icon_macos.icns"))
+      }
     }
   }
 }
