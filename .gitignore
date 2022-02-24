@@ -4,8 +4,12 @@
 .gradle
 local.properties
 
-/.idea/*
+.idea/
+.vscode/
 /build
 /captures
 
 !/.idea/codeStyles
+
+obj/
+bin/

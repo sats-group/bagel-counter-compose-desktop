@@ -22,11 +22,19 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import com.microsoft.signalr.*
 
 @Composable
 @Preview
 fun App() {
-  var counter by remember { mutableStateOf(0) }
+  var counter by remember {
+    mutableStateOf(0) }
+  var hubConnection = remember {
+    var hubConnection  = HubConnectionBuilder.create("https://sats-test-no-bagel.azurewebsites.net/api").build()
+    hubConnection.on("UpdatedBagelCount", Action1 {b: Int -> counter = b}, Int::class.java)
+    hubConnection.start().blockingAwait()
+    hubConnection
+  }
 
   Surface(color = Color.Black, contentColor = Color.White) {
     Row(
@@ -54,11 +62,11 @@ fun App() {
           .background(color = Color(0xFFC4C4C4))
       )
 
-      IconButton(onClick = { counter-- }, Modifier.padding(start = 60.dp), enabled = counter > 0) {
+      IconButton(onClick = { hubConnection.send("DecrementBagelCount") }, Modifier.padding(start = 60.dp), enabled = counter > 0) {
         Icon(Icons.Outlined.ExpandMore, contentDescription = null, Modifier.size(104.dp))
       }
 
-      IconButton(onClick = { counter++ }, Modifier.padding(start = 21.dp, end = 77.dp), enabled = counter < 8) {
+      IconButton(onClick = { hubConnection.send("IncrementBagelCount") }, Modifier.padding(start = 21.dp, end = 77.dp), enabled = counter < 8) {
         Icon(Icons.Outlined.ExpandLess, contentDescription = null, Modifier.size(104.dp))
       }
     }

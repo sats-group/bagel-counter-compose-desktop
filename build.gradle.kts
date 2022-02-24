@@ -26,6 +26,13 @@ dependencies {
   testImplementation(kotlin("test"))
 
   implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.0.0")
+
+  implementation("com.microsoft.signalr:signalr:6.0.1")
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_16
+  targetCompatibility = JavaVersion.VERSION_16
 }
 
 tasks.test {
@@ -33,7 +40,7 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-  kotlinOptions.jvmTarget = "11"
+  kotlinOptions.jvmTarget = "16"
 }
 
 compose.desktop {
