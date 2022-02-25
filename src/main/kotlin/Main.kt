@@ -9,7 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,19 +22,12 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.microsoft.signalr.*
+import core.viewModel
 
 @Composable
 @Preview
 fun App() {
-  var counter by remember {
-    mutableStateOf(0) }
-  var hubConnection = remember {
-    var hubConnection  = HubConnectionBuilder.create("https://sats-test-no-bagel.azurewebsites.net/api").build()
-    hubConnection.on("UpdatedBagelCount", Action1 {b: Int -> counter = b}, Int::class.java)
-    hubConnection.start().blockingAwait()
-    hubConnection
-  }
+  val viewModel = viewModel { CounterViewModel() }
 
   Surface(color = Color.Black, contentColor = Color.White) {
     Row(
@@ -48,7 +41,7 @@ fun App() {
       Text("Bagel counter", Modifier.padding(start = 74.dp), fontSize = 56.sp)
 
       Text(
-        text = counter.toString(),
+        text = viewModel.counterValue.toString(),
         modifier = Modifier.padding(start = 110.dp),
         fontSize = 76.sp,
         fontWeight = FontWeight.Bold
@@ -62,11 +55,19 @@ fun App() {
           .background(color = Color(0xFFC4C4C4))
       )
 
-      IconButton(onClick = { hubConnection.send("DecrementBagelCount") }, Modifier.padding(start = 60.dp), enabled = counter > 0) {
+      IconButton(
+        modifier = Modifier.padding(start = 60.dp),
+        onClick = viewModel::onDecrementClicked,
+        enabled = viewModel.isDecrementEnabled
+      ) {
         Icon(Icons.Outlined.ExpandMore, contentDescription = null, Modifier.size(104.dp))
       }
 
-      IconButton(onClick = { hubConnection.send("IncrementBagelCount") }, Modifier.padding(start = 21.dp, end = 77.dp), enabled = counter < 8) {
+      IconButton(
+        modifier = Modifier.padding(start = 21.dp, end = 77.dp),
+        onClick = viewModel::onIncrementClicked,
+        enabled = viewModel.isIncrementEnabled
+      ) {
         Icon(Icons.Outlined.ExpandLess, contentDescription = null, Modifier.size(104.dp))
       }
     }
