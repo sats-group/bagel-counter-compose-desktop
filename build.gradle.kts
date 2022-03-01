@@ -2,7 +2,7 @@ import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val appVersion = "1.0.0"
+val appVersion = "1.1.0"
 
 plugins {
   kotlin("jvm") version "1.5.31"
