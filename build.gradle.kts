@@ -48,6 +48,8 @@ compose.desktop {
     mainClass = "MainKt"
 
     nativeDistributions {
+      modules("java.sql")
+
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
 
       packageName = "bagels"
