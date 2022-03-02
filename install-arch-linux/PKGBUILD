@@ -1,0 +1,28 @@
+pkgname=bagels
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="The Bagel Counter"
+arch=('any')
+url="https://github.com/healthfitnessnordic/bagel-counter-compose-desktop"
+license=('MIT')
+makedepends=('tar>=1.34-1')
+source=(
+  "$pkgname-$pkgver.tar.gz::$url/releases/download/v1.1.0/bagels-linux-x64-$pkgver.tar.xz"
+  "https://raw.githubusercontent.com/healthfitnessnordic/bagel-counter-compose-desktop/main/LICENSE"
+)
+md5sums=(
+  'fe7a1e256872a2fe1a78dcb44896a006'
+  'ff067df01ee69508f0a48c8913afac5b'
+)
+
+package() {
+  cd $srcdir/bagels
+
+  mkdir -p $pkgdir/opt/bagels/bin
+  cp -r lib $pkgdir/opt/bagels/lib
+
+  install bin/bagels $pkgdir/opt/bagels/bin/bagels
+
+  mkdir -p $pkgdir/usr/bin
+  ln -s /opt/bagels/bin/bagels $pkgdir/usr/bin/bagels
+}
