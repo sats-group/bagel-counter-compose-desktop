@@ -10,16 +10,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,10 +34,19 @@ import core.viewModel
 @Composable
 @Preview
 fun BagelCounter(viewModel: CounterViewModel) {
-  Surface(color = Color.Black, contentColor = Color.White) {
+  val textMeasurer = rememberTextMeasurer()
+  val widestNumberWidth: Dp = remember(textMeasurer) {
+    listOf(0, 1, 2, 3, 4, 5, 6, 7, 8).fold(0) { largestSoFar, number ->
+      val width = textMeasurer.measure("$number").size.width
+      if (width > largestSoFar) width else largestSoFar
+    }
+  }.let { pxWidth -> with(LocalDensity.current) { pxWidth.toDp() } }
+
+  Surface(Modifier.wrapContentSize(), color = Color.Black, contentColor = Color.White) {
     Row(
       modifier = Modifier
         .height(IntrinsicSize.Min)
+        .background(Color.Black)
         .padding(vertical = 27.dp),
       verticalAlignment = Alignment.CenterVertically
     ) {
@@ -45,10 +56,12 @@ fun BagelCounter(viewModel: CounterViewModel) {
 
       Text(
         text = viewModel.counterValue.toString(),
-        modifier = Modifier.padding(start = 110.dp),
+        modifier = Modifier.padding(start = 110.dp).width(widestNumberWidth),
         fontSize = 76.sp,
         fontWeight = FontWeight.Bold
       )
+
+//      Spacer(Modifier.weight(1f))
 
       Box(
         Modifier
@@ -77,7 +90,6 @@ fun BagelCounter(viewModel: CounterViewModel) {
   }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
   val viewModel: CounterViewModel = viewModel { CounterViewModel() }
 
@@ -88,6 +100,7 @@ fun main() = application {
       width = Dp.Unspecified,
       height = Dp.Unspecified,
     ),
+    undecorated = false,
     resizable = false,
     icon = painterResource("bagel.png"),
     title = "Bagel Counter",
