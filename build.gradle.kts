@@ -1,13 +1,12 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val appVersion = "1.1.0"
 
 plugins {
-  kotlin("jvm") version "1.5.31"
+  kotlin("jvm") version "1.9.21"
 
-  id("org.jetbrains.compose") version "1.0.0"
+  id("org.jetbrains.compose") version "1.5.11"
 }
 
 group = "com.sats.bagels"
@@ -25,9 +24,9 @@ dependencies {
 
   testImplementation(kotlin("test"))
 
-  implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.0.0")
+  implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.5.11")
 
-  implementation("com.microsoft.signalr:signalr:6.0.1")
+  implementation("com.microsoft.signalr:signalr:8.0.0")
 }
 
 java {
