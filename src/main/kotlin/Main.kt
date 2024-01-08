@@ -11,8 +11,13 @@ import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -26,9 +31,7 @@ import core.viewModel
 
 @Composable
 @Preview
-fun App() {
-  val viewModel = viewModel { CounterViewModel() }
-
+fun BagelCounter(viewModel: CounterViewModel) {
   Surface(color = Color.Black, contentColor = Color.White) {
     Row(
       modifier = Modifier
@@ -74,7 +77,10 @@ fun App() {
   }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
+  val viewModel: CounterViewModel = viewModel { CounterViewModel() }
+
   Window(
     onCloseRequest = ::exitApplication,
     state = rememberWindowState(
@@ -84,8 +90,19 @@ fun main() = application {
     ),
     resizable = false,
     icon = painterResource("bagel.png"),
-    title = "Bagel Counter"
+    title = "Bagel Counter",
+    onKeyEvent = { keyEvent ->
+      if (keyEvent.type != KeyEventType.KeyUp) return@Window false
+
+      when (keyEvent.key) {
+        Key.DirectionUp -> viewModel.onIncrementClicked()
+        Key.DirectionDown -> viewModel.onDecrementClicked()
+        else -> return@Window false
+      }
+
+      return@Window true
+    }
   ) {
-    App()
+    BagelCounter(viewModel)
   }
 }
